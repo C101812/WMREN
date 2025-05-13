@@ -132,68 +132,29 @@ if __name__ == "__main__":
     best_model = None
     results = {}
 
-    model_files = [f for f in os.listdir(model_dir) if f.endswith('.pth')]
-    for model_file in model_files:
-        snapshot = os.path.join(model_dir, model_file)
-        logging.info(f"Testing model: {snapshot}")
 
-        try:
-            # Load model weights
-            msg = net.load_state_dict(torch.load(snapshot))
-            logging.info(f"Model loaded successfully: {msg}")
-        except Exception as e:
-            logging.error(f"Failed to load model {snapshot}: {e}")
-            continue
-
-        # Perform inference
-        if args.is_savenii:
-            args.test_save_dir = os.path.join(args.output_dir, "predictions", model_file)
-            test_save_path = args.test_save_dir
-            os.makedirs(test_save_path, exist_ok=True)
-        else:
-            test_save_path = None
-
-        # Run the inference function
-        performance,hd95 = inference(args, net, test_save_path)
-        # Log the result for this model
-        logging.info(f"Model: {model_file}, Performance: {performance:.4f}, hd95: {hd95:.2f}")
-        results[model_file] = (performance, hd95)
-
-        # Update the best model
-        if performance > best_score:
-            best_score = performance
-            best_model = model_file
-            best_hd95 = hd95
-
-    # Output final results
-    logging.info("\n========== Final Results ==========")
-    for model_file, (perf, hd) in results.items():
-        logging.info(f"Model: {model_file}, Performance: {perf}, hd95: {hd}")
-    logging.info(f"Best Model: {best_model}, Best Performance: {best_score}, Best hd95: {best_hd95}")
-
-    print(f"Best Model: {best_model}, Best Performance: {best_score}, Best hd95: {best_hd95}")
-    #
-    #
-    # snapshot = os.path.join(args.output_dir, 'best_model.pth')
-    # if not os.path.exists(snapshot): snapshot = snapshot.replace('best_model', 'epoch_'+str(args.max_epochs-1))
-    # snapshot = r"model_out/epoch_299_2024-08-16_21-28-27.pth"
-    # msg = net.load_state_dict(torch.load(snapshot))
-    # print("self trained swin unet",msg)
-    # snapshot_name = snapshot.split('/')[-1]
-    #
-    # log_folder = './/test_log//test_log_'
-    # os.makedirs(log_folder, exist_ok=True)
-    # logging.basicConfig(filename=log_folder + '/'+snapshot_name+".txt", level=logging.INFO, format='[%(asctime)s.%(msecs)03d] %(message)s', datefmt='%H:%M:%S')
-    # logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
-    # logging.info(str(args))
-    # logging.info(snapshot_name)
-    #
-    # if args.is_savenii:
-    #     args.test_save_dir = os.path.join(args.output_dir, "predictions")
-    #     test_save_path = args.test_save_dir
-    #     os.makedirs(test_save_path, exist_ok=True)
-    # else:
-    #     test_save_path = None
-    # inference(args, net, test_save_path)
+    
+    
+    snapshot = os.path.join(args.output_dir, 'best_model.pth')
+    if not os.path.exists(snapshot): snapshot = snapshot.replace('best_model', 'epoch_'+str(args.max_epochs-1))
+    snapshot = r"model_out/epoch_299_2024-08-16_21-28-27.pth"
+    msg = net.load_state_dict(torch.load(snapshot))
+    print("self trained swin unet",msg)
+    snapshot_name = snapshot.split('/')[-1]
+    
+    log_folder = './/test_log//test_log_'
+    os.makedirs(log_folder, exist_ok=True)
+    logging.basicConfig(filename=log_folder + '/'+snapshot_name+".txt", level=logging.INFO, format='[%(asctime)s.%(msecs)03d] %(message)s', datefmt='%H:%M:%S')
+    logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+    logging.info(str(args))
+    logging.info(snapshot_name)
+    
+    if args.is_savenii:
+        args.test_save_dir = os.path.join(args.output_dir, "predictions")
+        test_save_path = args.test_save_dir
+        os.makedirs(test_save_path, exist_ok=True)
+    else:
+        test_save_path = None
+    inference(args, net, test_save_path)
 
 
